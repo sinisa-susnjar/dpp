@@ -29,6 +29,7 @@ buildType "profile-gc" {
 
 configuration "executable" {
     dflags "-dip1000"
+    lflags "-LC:\\Program Files\\LLVM\\bin" platform="windows"
     mainSourceFile "source/main.d"
 }
 
@@ -36,6 +37,7 @@ configuration "executable" {
 configuration "library" {
     targetType "library"
     targetName "dpp"
+    lflags "-LC:\\Program Files\\LLVM\\bin" platform="windows"
     excludedSourceFiles "source/main.d"
 }
 

@@ -94,7 +94,26 @@ package string dKeywordFromStrass(in from!"clang".Cursor cursor) @safe {
         return cursor.baseClasses.any!anyVirtualInAncestry;
     }
 
-    return anyVirtualInAncestry(cursor)
+    static bool allVirtuals(in Cursor cursor) {
+        import std.stdio;
+        import clang: Type;
+        import std.algorithm: all, filter, count;
+
+        foreach (ref c; cursor.children) {
+            writefln("%s.%s type: %s isVirtual: %s isPureVirtual: %s",
+                    cursor, c, c.type.kind, c.isVirtual, c.isPureVirtual);
+        }
+
+        if (cursor.children.count!(a => a.type.kind == Type.Kind.FunctionProto) == 0)
+            return false;
+        return cursor.children
+                    .filter!(a => a.type.kind == Type.Kind.FunctionProto)
+                    .all!(a => a.isVirtual || a.isPureVirtual);
+    }
+
+    return allVirtuals(cursor)
+        ? "interface"
+        : anyVirtualInAncestry(cursor)
         ? "class"
         : "struct";
 }
